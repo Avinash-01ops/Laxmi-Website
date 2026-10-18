@@ -1,0 +1,13 @@
+{
+  "name": "Laxmi Veneer & Timber LLP",
+  "short_name": "Laxmi Veneer",
+  "description": "Veneer, timber, flush doors and laminates in Ahmedabad and Gandhinagar.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#faf6ee",
+  "theme_color": "#24150c",
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

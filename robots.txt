@@ -1,0 +1,6 @@
+# Laxmi Veneer & Timber LLP
+User-agent: *
+Allow: /
+
+# When you have a domain, generate a sitemap.xml and point to it here, e.g.:
+# Sitemap: https://your-domain.com/sitemap.xml
