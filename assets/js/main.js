@@ -2,7 +2,7 @@
 var CONTACTS=[
  {name:'Rahul Panchal',role:'Owner & Partner',phone:'94268 69274',wa:'919426869274'},
  {name:'Ashish Mishra',role:'Marketing Advisor and Partner',phone:'91575 60273',wa:'919157560273'},
- {name:'Partner',role:'Business Partner',phone:'94283 54276',wa:'919428354276'}
+ {name:'Hardeep Patel',role:'Business Partner',phone:'94283 54276',wa:'919428354276'}
 ];
 var COLS={};/* photo sets for the viewer: key -> [{s:src,t:label}] */
 var IMAGES={/* every photo from /images; 8 show first, the rest behind "View all" */
@@ -118,8 +118,57 @@ document.querySelectorAll('.kbg').forEach(function(g){var ks=g.querySelectorAll(
 var hd=document.querySelector('header'),BG=document.querySelectorAll('.tile .bg'),tk=false;
 function onS(){hd.classList.toggle('sc',scrollY>8);if(rm)return;var vh=innerHeight;BG.forEach(function(e){var q=e.parentNode.getBoundingClientRect();if(q.bottom<-100||q.top>vh+100)return;var p=(q.top+q.height/2-vh/2)/vh;e.style.setProperty('--py',Math.max(0,Math.min(100,50+p*70))+'%')});tk=false}
 addEventListener('scroll',function(){if(!tk){tk=true;requestAnimationFrame(onS)}},{passive:true});onS();
-document.getElementById('enquiry').onsubmit=function(e){e.preventDefault();
- var t='Enquiry for Laxmi Veneer & Timber LLP\nName: '+n.value+'\nPhone: '+p.value+'\nProduct: '+pr.value+'\nLocation: '+loc.value+'\nRequirement: '+document.getElementById('m').value;
- window.open('https://wa.me/'+WHATSAPP+'?text='+encodeURIComponent(t),'_blank');document.getElementById('msg').textContent='Opening WhatsApp with your enquiry.'};
-var w=document.getElementById('wa');w.style.display='grid';
+var quoteModal=document.getElementById('quote-modal');
+var quoteForm=document.getElementById('quote-form');
+var quoteStatus=document.getElementById('quote-status');
+function openQuoteModal(){
+ if(!quoteModal)return;
+ quoteModal.hidden=false;
+ document.body.classList.add('lbo');
+ var first=document.getElementById('q-name');
+ if(first)first.focus();
+}
+function closeQuoteModal(){
+ if(!quoteModal)return;
+ quoteModal.hidden=true;
+ document.body.classList.remove('lbo');
+}
+function getQuotePayload(){
+ var form=quoteForm;if(!form)return null;
+ var name=document.getElementById('q-name').value.trim();
+ var contact=document.getElementById('q-contact').value.trim();
+ var product=document.getElementById('q-product').value.trim();
+ var location=document.getElementById('q-location').value.trim();
+ var requirement=document.getElementById('q-requirement').value.trim();
+ if(!name||!contact||!location||!requirement){
+  quoteStatus.textContent='Please fill in Name, Contact, Location and Requirement.';
+  return null;
+ }
+ return {name:name,contact:contact,product:product,location:location,requirement:requirement};
+}
+function sendQuoteByEmail(){
+ var data=getQuotePayload();
+ if(!data)return;
+ var subject=encodeURIComponent('Quote Request - '+data.product+' - '+data.name);
+ var body=encodeURIComponent('Name: '+data.name+'\nContact: '+data.contact+'\nProduct: '+data.product+'\nLocation: '+data.location+'\nRequirement: '+data.requirement+'\n\nThank you.');
+ window.location.href='mailto:laxmi.vandal@gmail.com?subject='+subject+'&body='+body;
+ quoteStatus.textContent='Opening your email app with the quote details.';
+}
+function sendQuoteByWhatsApp(){
+ var data=getQuotePayload();
+ if(!data)return;
+ var text='Hello Laxmi Veneer & Timber LLP,\n\nName: '+data.name+'\nContact: '+data.contact+'\nProduct: '+data.product+'\nLocation: '+data.location+'\nRequirement: '+data.requirement+'\n\nPlease send me a quote and availability details.';
+ window.open('https://wa.me/'+WHATSAPP+'?text='+encodeURIComponent(text),'_blank','noopener');
+ quoteStatus.textContent='Opening WhatsApp with your enquiry details.';
+}
+if(document.getElementById('quote-close'))document.getElementById('quote-close').addEventListener('click',closeQuoteModal);
+if(quoteModal){quoteModal.addEventListener('click',function(e){if(e.target===quoteModal)closeQuoteModal();});document.addEventListener('keydown',function(e){if(!quoteModal.hidden&&e.key==='Escape')closeQuoteModal();});}
+if(document.getElementById('quote-email-btn'))document.getElementById('quote-email-btn').addEventListener('click',sendQuoteByEmail);
+if(document.getElementById('quote-wa-btn'))document.getElementById('quote-wa-btn').addEventListener('click',sendQuoteByWhatsApp);
+if(quoteForm){quoteForm.addEventListener('submit',function(e){e.preventDefault();sendQuoteByWhatsApp();});}
+document.querySelectorAll('[data-open-enquiry], a[href="#enquiry"]').forEach(function(link){link.addEventListener('click',function(e){
+ if(link.getAttribute('href')==='#enquiry' || link.hasAttribute('data-open-enquiry')){e.preventDefault();openQuoteModal();}
+});});
+document.querySelectorAll('.quote-contact').forEach(function(btn){btn.addEventListener('click',function(){var phone=btn.dataset.partnerPhone||'';var name=btn.dataset.partnerName||'Partner';window.location.href='tel:+91'+phone.replace(/\D/g,'');});});
+var w=document.getElementById('wa');if(w)w.style.display='grid';
 
